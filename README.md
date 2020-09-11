@@ -1,5 +1,7 @@
 *(All requirements below are satisfied.)*
 
+Important reference: [The seq_file Interface](https://www.kernel.org/doc/html/latest/filesystems/seq_file.html). The way to create proc file in this doc was used in this experiment.
+
 ## 实验1：Linux进程管理及其扩展（综合型，必做）
 
 ### 实验目的
