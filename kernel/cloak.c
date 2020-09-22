@@ -57,14 +57,15 @@ static int hidden_single_open(struct inode *inode, struct file *file)
 }
 
 static ssize_t  hidden_single_write(struct file *file, const char __user *buf, size_t count, loff_t *pos){
-    int len=1;
-    if(copy_from_user(kbuf,buf,len))
+    if(copy_from_user(kbuf,buf,1))
         return -EFAULT;
-    if(kbuf[0]=='0')
-        hidden_flag=0;
-    else
-        hidden_flag=1;
-    return len;
+	if(kbuf[0]=='0' || kbuf[0]=='1'){
+		if(kbuf[0]=='0')
+			hidden_flag=0;
+		else
+			hidden_flag=1;
+	}
+    return count;
 }
 
 static const struct proc_ops hidden_single_ops = {
